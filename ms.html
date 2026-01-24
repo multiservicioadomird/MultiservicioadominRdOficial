@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store MS - Shopping Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --azul-ms: #004e92;
+            --rojo-ms: #e23337;
+            --whatsapp: #25D366;
+            --gradient: linear-gradient(135deg, #004e92 0%, #e23337 100%);
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f0f2f5;
+            padding-top: 180px; 
+            min-height: 100vh;
+        }
+
+        .main-header { 
+            background: var(--gradient); 
+            position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
+        .brand { color: white; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+
+        .btn-main-register { 
+            background: white; color: var(--azul-ms); border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; 
+        }
+
+        .filter-nav { 
+            background: rgba(0,0,0,0.2); display: flex; justify-content: center; padding: 10px; gap: 10px; flex-wrap: wrap; max-height: 100px; overflow-y: auto;
+        }
+        .filter-nav button { 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; 
+        }
+        .filter-nav button.active { background: white; color: var(--rojo-ms); font-weight: bold; }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+        /* Tarjeta y Fotos */
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; transition: 0.3s; }
+        .card.agotado { opacity: 0.7; }
+        .card.agotado img { filter: grayscale(1); }
+
+        .img-container { width: 100%; height: 230px; position: relative; overflow: hidden; background: #eee; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; transition: opacity 0.5s; }
+        .img-secondary { opacity: 0; }
+        .card:not(.agotado):hover .img-secondary { opacity: 1; }
+        .card:not(.agotado):hover .img-primary { opacity: 0; }
+
+        .badge-status { position: absolute; top: 12px; left: 12px; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: white; z-index: 5; }
+        .status-disponible { background: #2ecc71; }
+        .status-agotado { background: #e74c3c; }
+
+        .photo-indicator { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.6rem; z-index: 5; }
+
+        .card-body { padding: 15px; flex-grow: 1; }
+        .card-category { font-size: 0.7rem; color: var(--rojo-ms); font-weight: bold; text-transform: uppercase; }
+        .badge-condition { display: inline-block; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; margin: 5px 0; color: #666; font-weight: bold; }
+        .card-price { font-size: 1.5rem; color: var(--azul-ms); font-weight: bold; }
+
+        .btn-whatsapp { display: block; background-color: var(--whatsapp); color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: bold; margin: 15px; border-radius: 10px; }
+        .btn-whatsapp.disabled { background-color: #ccc; pointer-events: none; }
+
+        .action-btns { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+        .btn-circle { background: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; }
+
+        /* Modales */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; backdrop-filter: blur(4px); overflow-y: auto; }
+        .modal-content { background: white; width: 95%; max-width: 450px; margin: 20px auto; padding: 25px; border-radius: 20px; position: relative; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-submit { width: 100%; background: var(--gradient); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
+        #btnBack { display: none; margin: 0 auto 20px; padding: 12px 25px; border-radius: 50px; border: none; background: var(--rojo-ms); color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-top">
+            <div class="brand" onclick="clearUrl()">Store MS</div>
+            <button class="btn-main-register" onclick="verifyAuth()"><i class="fas fa-plus-circle"></i> Vender</button>
+        </div>
+        <nav class="filter-nav" id="filterNav">
+            <button class="active" onclick="filterBy('todos', this)">Todos</button>
+            <button onclick="filterBy('Hogar', this)">🏠 Hogar</button>
+            <button onclick="filterBy('Electrónica', this)">📺 Electrónica</button>
+            <button onclick="filterBy('Tecnología', this)">💻 Tecnología</button>
+            <button onclick="filterBy('Ferretería', this)">🛠️ Ferretería</button>
+            <button onclick="filterBy('Belleza', this)">💄 Estilo/Belleza</button>
+            <button onclick="filterBy('Vehículo', this)">🚗 Vehículos</button>
+            <button onclick="filterBy('Ropa Mujer', this)">👗 Ropa Mujer</button>
+            <button onclick="filterBy('Ropa Hombre', this)">👕 Ropa Hombre</button>
+            <button onclick="filterBy('Joyas', this)">💍 Joyas</button>
+            <button onclick="filterBy('Juguetes', this)">🧸 Juguetes</button>
+            <button onclick="filterBy('Mascotas', this)">🐾 Mascotas</button>
+            <button onclick="filterBy('Propiedades', this)">🏘️ Propiedades</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <center><button id="btnBack" onclick="clearUrl()"><i class="fas fa-arrow-left"></i> VER TODO EL CATÁLOGO</button></center>
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <h2 style="text-align:center; margin-top:0;">Publicar Producto</h2>
+            <form id="productForm">
+                <div class="form-group"><input type="text" id="pName" placeholder="Nombre del Producto" required></div>
+                <div class="form-group"><input type="number" id="pPrice" placeholder="Precio RD$" required></div>
+                
+                <div class="form-group">
+                    <label>Condición</label>
+                    <select id="pCondition">
+                        <option value="Nuevo">✨ Nuevo</option>
+                        <option value="Usado">👌 Usado (Como nuevo)</option>
+                        <option value="Buenas Condiciones">👍 Buenas condiciones</option>
+                        <option value="Para piezas">⚙️ Para piezas / Repuesto</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="pCategory">
+                        <option value="Hogar">🏠 Hogar</option>
+                        <option value="Electrónica">📺 Electrónica</option>
+                        <option value="Tecnología">💻 Tecnología</option>
+                        <option value="Ferretería">🛠️ Ferretería</option>
+                        <option value="Belleza">💄 Estilo y Belleza</option>
+                        <option value="Vehículo">🚗 Vehículo</option>
+                        <option value="Ropa Mujer">👗 Ropa Mujer</option>
+                        <option value="Ropa Hombre">👕 Ropa Hombre</option>
+                        <option value="Joyas">💍 Joyas</option>
+                        <option value="Juguetes">🧸 Juguetes</option>
+                        <option value="Mascotas">🐾 Mascotas</option>
+                        <option value="Propiedades">🏘️ Propiedades</option>
+                    </select>
+                </div>
+
+                <div class="form-group"><input type="text" id="pSeller" placeholder="Tu Nombre" required></div>
+                <div class="form-group"><input type="tel" id="pPhone" placeholder="WhatsApp (Ej: 8291234567)" required></div>
+
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;"><label>Foto 1</label><input type="file" id="pImage1" accept="image/*" required></div>
+                    <div class="form-group" style="flex:1;"><label>Foto 2</label><input type="file" id="pImage2" accept="image/*"></div>
+                </div>
+
+                <div class="form-group"><input type="password" id="pDelPin" placeholder="PIN de gestión" required></div>
+                
+                <button type="submit" class="btn-submit">Publicar Ahora</button>
+                <button type="button" onclick="closeModal('registerModal')" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:10px;">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="authModal">
+        <div class="modal-content" style="text-align: center;">
+            <h2>Acceso Vendedor</h2>
+            <input type="password" id="authInput" placeholder="Código MS" style="text-align:center; font-size:1.5rem; width:100%; padding:10px; border-radius:10px; border:1px solid #ddd;">
+            <button class="btn-submit" onclick="checkAuthCode()" style="margin-top:20px;">Entrar</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUrWmD2_eZfEvpESRZQaSTkS1Bpey-GL8",
+            authDomain: "tienda-568b7.firebaseapp.com",
+            databaseURL: "https://tienda-568b7-default-rtdb.firebaseio.com",
+            projectId: "tienda-568b7",
+            storageBucket: "tienda-568b7.firebasestorage.app",
+            messagingSenderId: "390336426585",
+            appId: "1:390336426585:web:d15cb6bf620093244bb748"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const productsRef = db.ref('products');
+        const codigosStoreMS = ["8349", "1720", "4561", "9032"]; 
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = e => reject(e);
+        });
+
+        document.getElementById('productForm').onsubmit = async function(e) {
+            e.preventDefault();
+            try {
+                const b1 = await toBase64(document.getElementById('pImage1').files[0]);
+                const f2 = document.getElementById('pImage2').files[0];
+                const b2 = f2 ? await toBase64(f2) : null;
+
+                productsRef.push({
+                    name: document.getElementById('pName').value,
+                    price: document.getElementById('pPrice').value,
+                    condition: document.getElementById('pCondition').value,
+                    category: document.getElementById('pCategory').value,
+                    seller: document.getElementById('pSeller').value,
+                    phone: document.getElementById('pPhone').value,
+                    delPin: document.getElementById('pDelPin').value,
+                    image: b1,
+                    image2: b2,
+                    status: 'disponible'
+                });
+                closeModal('registerModal');
+                this.reset();
+            } catch (err) { alert("Error al subir"); }
+        };
+
+        // LECTURA DE DATOS CON FILTRO DE ID PARA LINKS
+        productsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            window.allProducts = data ? Object.keys(data).map(k => ({...data[k], firebaseKey: k})).reverse() : [];
+            
+            // Revisa si hay un ID en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (productId) {
+                const singleProduct = window.allProducts.filter(p => p.firebaseKey === productId);
+                render(singleProduct, true);
+            } else {
+                render(window.allProducts, false);
+            }
+        });
+
+        function render(data, isSingle) {
+            const grid = document.getElementById('productGrid');
+            const backBtn = document.getElementById('btnBack');
+            grid.innerHTML = '';
+            
+            backBtn.style.display = isSingle ? 'block' : 'none';
+
+            data.forEach(p => {
+                const isAgotado = p.status === 'agotado';
+                const hasTwo = p.image2 ? true : false;
+                const msg = encodeURIComponent(`Hola ${p.seller}, me interesa ${p.name} (${p.condition}).`);
+
+                grid.innerHTML += `
+                    <div class="card ${isAgotado ? 'agotado' : ''}">
+                        <div class="badge-status ${isAgotado ? 'status-agotado' : 'status-disponible'}">
+                            ${p.status.toUpperCase()}
+                        </div>
+                        <div class="img-container">
+                            <img src="${p.image}" class="img-primary">
+                            ${hasTwo ? `<img src="${p.image2}" class="img-secondary">` : ''}
+                            ${hasTwo ? `<div class="photo-indicator"><i class="fas fa-images"></i> 2 fotos</div>` : ''}
+                        </div>
+                        <div class="action-btns">
+                            <button class="btn-circle" onclick="shareProduct('${p.firebaseKey}')"><i class="fas fa-share-alt" style="color:#25D366"></i></button>
+                            <button class="btn-circle" onclick="toggleStatus('${p.firebaseKey}', '${p.status}', '${p.delPin}')"><i class="fas fa-sync-alt" style="color:#004e92"></i></button>
+                            <button class="btn-circle" onclick="deleteProduct('${p.firebaseKey}', '${p.delPin}')"><i class="fas fa-trash" style="color:#e23337"></i></button>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-category">${p.category}</div>
+                            <h3 style="margin:5px 0; font-size:1.1rem;">${p.name}</h3>
+                            <span class="badge-condition">${p.condition}</span>
+                            <div class="card-price">RD$ ${Number(p.price).toLocaleString()}</div>
+                        </div>
+                        <a href="${isAgotado ? '#' : 'https://wa.me/'+p.phone+'?text='+msg}" target="_blank" class="btn-whatsapp ${isAgotado ? 'disabled' : ''}">
+                            ${isAgotado ? 'PRODUCTO AGOTADO' : '<i class="fab fa-whatsapp"></i> Comprar'}
+                        </a>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleStatus(key, current, pin) {
+            if (prompt("PIN de gestión:") === pin) {
+                db.ref('products/' + key).update({ status: current === 'disponible' ? 'agotado' : 'disponible' });
+            } else { alert("PIN incorrecto"); }
+        }
+
+        function deleteProduct(key, pin) {
+            if (prompt("PIN para eliminar:") === pin) {
+                if(confirm("¿Eliminar producto?")) {
+                    db.ref('products/' + key).remove();
+                    clearUrl();
+                }
+            } else { alert("PIN incorrecto"); }
+        }
+
+        function verifyAuth() { document.getElementById('authModal').style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function checkAuthCode() {
+            if(codigosStoreMS.includes(document.getElementById('authInput').value)) {
+                closeModal('authModal');
+                document.getElementById('registerModal').style.display = 'block';
+                document.getElementById('authInput').value = '';
+            } else { alert("Código inválido"); }
+        }
+        
+        function clearUrl() { window.location.href = window.location.origin + window.location.pathname; }
+        
+        function filterBy(cat, btn) {
+            document.querySelectorAll('.filter-nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(cat === 'todos' ? window.allProducts : window.allProducts.filter(p => p.category === cat), false);
+        }
+
+        function shareProduct(id) {
+            const url = window.location.origin + window.location.pathname + "?id=" + id;
+            navigator.clipboard.writeText(url);
+            alert("Link del producto copiado");
+        }
+    </script>
+</body>
+</html>

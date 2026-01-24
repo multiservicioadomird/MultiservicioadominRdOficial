@@ -18,9 +18,23 @@
             margin: 0; 
             font-family: 'Segoe UI', sans-serif; 
             background-color: #f0f2f5;
-            padding-top: 160px; /* Ajustado para móvil por defecto */
+            padding-top: 180px; 
             min-height: 100vh;
         }
+
+        /* --- AJUSTES DE RESPONSIVIDAD --- */
+        @media (max-width: 768px) {
+            body { padding-top: 140px; }
+            .header-top { padding: 10px 15px !important; }
+            .brand { font-size: 1.4rem !important; }
+            .btn-main-register { padding: 8px 15px !important; font-size: 0.9rem; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important; gap: 10px !important; }
+            .img-container { height: 160px !important; }
+            .card-price { font-size: 1.2rem !important; }
+            .filter-nav { justify-content: flex-start !important; overflow-x: auto; white-space: nowrap; display: block !important; }
+            .filter-nav button { display: inline-block; margin-right: 5px; }
+        }
+        /* ------------------------------- */
 
         .main-header { 
             background: var(--gradient); 
@@ -35,37 +49,21 @@
         }
 
         .filter-nav { 
-            background: rgba(0,0,0,0.2); 
-            display: flex; 
-            justify-content: flex-start; 
-            padding: 10px; 
-            gap: 10px; 
-            overflow-x: auto; /* Scroll horizontal en móviles */
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
+            background: rgba(0,0,0,0.2); display: flex; justify-content: center; padding: 10px; gap: 10px; flex-wrap: wrap; max-height: 100px; overflow-y: auto;
         }
-        
-        /* Ocultar barra de scroll en el nav para estética */
-        .filter-nav::-webkit-scrollbar { display: none; }
-
         .filter-nav button { 
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 18px; border-radius: 20px; cursor: pointer; flex-shrink: 0;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; 
         }
         .filter-nav button.active { background: white; color: var(--rojo-ms); font-weight: bold; }
 
-        .container { max-width: 1300px; margin: 0 auto; padding: 15px; }
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-        }
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 
-        /* Tarjeta y Fotos */
         .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); position: relative; display: flex; flex-direction: column; transition: 0.3s; }
         .card.agotado { opacity: 0.7; }
         .card.agotado img { filter: grayscale(1); }
 
-        .img-container { width: 100%; height: 250px; position: relative; overflow: hidden; background: #eee; }
+        .img-container { width: 100%; height: 230px; position: relative; overflow: hidden; background: #eee; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; transition: opacity 0.5s; }
         .img-secondary { opacity: 0; }
         .card:not(.agotado):hover .img-secondary { opacity: 1; }
@@ -88,33 +86,14 @@
         .action-btns { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
         .btn-circle { background: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; }
 
-        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; backdrop-filter: blur(4px); overflow-y: auto; }
-        .modal-content { background: white; width: 90%; max-width: 450px; margin: 20px auto; padding: 20px; border-radius: 20px; position: relative; }
+        .modal-content { background: white; width: 90%; max-width: 450px; margin: 20px auto; padding: 25px; border-radius: 20px; position: relative; }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .btn-submit { width: 100%; background: var(--gradient); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
         #btnBack { display: none; margin: 0 auto 20px; padding: 12px 25px; border-radius: 50px; border: none; background: var(--rojo-ms); color: white; font-weight: bold; cursor: pointer; }
-
-        /* MEDIA QUERIES PARA DISPOSITIVOS MÓVILES */
-        @media (max-width: 600px) {
-            body { padding-top: 135px; }
-            .header-top { padding: 10px 15px; }
-            .brand { font-size: 1.4rem; }
-            .btn-main-register { padding: 8px 15px; font-size: 0.8rem; }
-            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-            .img-container { height: 180px; }
-            .card-price { font-size: 1.2rem; }
-            .card-body h3 { font-size: 0.9rem; }
-            .container { padding: 10px; }
-        }
-
-        @media (min-width: 601px) {
-            body { padding-top: 155px; }
-            .filter-nav { justify-content: center; overflow-x: hidden; flex-wrap: wrap; }
-        }
     </style>
 </head>
 <body>
@@ -152,7 +131,6 @@
             <form id="productForm">
                 <div class="form-group"><input type="text" id="pName" placeholder="Nombre del Producto" required></div>
                 <div class="form-group"><input type="number" id="pPrice" placeholder="Precio RD$" required></div>
-                
                 <div class="form-group">
                     <label>Condición</label>
                     <select id="pCondition">
@@ -162,7 +140,6 @@
                         <option value="Para piezas">⚙️ Para piezas / Repuesto</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Categoría</label>
                     <select id="pCategory">
@@ -180,17 +157,13 @@
                         <option value="Propiedades">🏘️ Propiedades</option>
                     </select>
                 </div>
-
                 <div class="form-group"><input type="text" id="pSeller" placeholder="Tu Nombre" required></div>
                 <div class="form-group"><input type="tel" id="pPhone" placeholder="WhatsApp (Ej: 8291234567)" required></div>
-
                 <div style="display:flex; gap:10px;">
                     <div class="form-group" style="flex:1;"><label>Foto 1</label><input type="file" id="pImage1" accept="image/*" required></div>
                     <div class="form-group" style="flex:1;"><label>Foto 2</label><input type="file" id="pImage2" accept="image/*"></div>
                 </div>
-
                 <div class="form-group"><input type="password" id="pDelPin" placeholder="PIN de gestión" required></div>
-                
                 <button type="submit" class="btn-submit">Publicar Ahora</button>
                 <button type="button" onclick="closeModal('registerModal')" style="width:100%; background:none; border:none; color:gray; cursor:pointer; margin-top:10px;">Cancelar</button>
             </form>
@@ -259,7 +232,6 @@
             window.allProducts = data ? Object.keys(data).map(k => ({...data[k], firebaseKey: k})).reverse() : [];
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-
             if (productId) {
                 const singleProduct = window.allProducts.filter(p => p.firebaseKey === productId);
                 render(singleProduct, true);

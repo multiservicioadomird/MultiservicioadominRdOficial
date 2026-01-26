@@ -101,7 +101,6 @@
             font-weight: bold;
         }
 
-        /* Mensajes de estado */
         .error-banner {
             background-color: #e74c3c;
             color: white;
@@ -130,14 +129,14 @@
     
     <div id="errorBanner" class="error-banner">No es posible hasta completar formulario</div>
 
-    <div class="profile-picture-container">
-        <img id="profile-picture-preview" src="https://via.placeholder.com/120/cccccc/ffffff?text=+" alt="Foto de perfil">
-        <input type="file" id="profile-picture-upload" name="foto_perfil" accept="image/*" form="registroForm">
-        <label for="profile-picture-upload" class="upload-button" id="uploadLabel">Subir Foto (Obligatorio)</label>
-    </div>
-
-    <form id="registroForm" action="https://formspree.io/f/mvzkleyl" method="POST">
+    <form id="registroForm" action="https://formspree.io/f/mvzkleyl" method="POST" enctype="multipart/form-data">
         
+        <div class="profile-picture-container">
+            <img id="profile-picture-preview" src="https://via.placeholder.com/120/cccccc/ffffff?text=+" alt="Foto de perfil">
+            <input type="file" id="profile-picture-upload" name="foto_perfil" accept="image/*" required>
+            <label for="profile-picture-upload" class="upload-button" id="uploadLabel">Subir Foto (Obligatorio)</label>
+        </div>
+
         <div class="form-group">
             <label>Perfil</label>
             <select id="perfil" name="perfil" required>
@@ -174,7 +173,6 @@
 </div>
 
 <script>
-    // 1. Manejo de la foto
     let fotoSubida = false;
     document.getElementById('profile-picture-upload').addEventListener('change', function(event) {
         const [file] = event.target.files;
@@ -187,7 +185,6 @@
         }
     });
 
-    // 2. Validación total al enviar
     const form = document.getElementById('registroForm');
     const errorBanner = document.getElementById('errorBanner');
 
@@ -197,30 +194,16 @@
         const nombre = document.getElementById('nombre').value.trim();
         const email = document.getElementById('email').value.trim();
 
-        // Si falta CUALQUIER cosa (incluyendo la foto)
         if (!fotoSubida || !perfil || !vendedor || !nombre || !email) {
-            e.preventDefault(); // Detiene el envío al correo
+            e.preventDefault();
             errorBanner.style.display = 'block';
-            errorBanner.textContent = "No es posible hasta completar formulario";
             window.scrollTo(0, 0);
             return false;
         }
 
-        // Si todo está bien, guardamos localmente antes de que se vaya al correo
-        const newUser = {
-            id: Date.now(),
-            perfil,
-            nombre,
-            email,
-            timestamp: new Date().toLocaleString()
-        };
-        let users = JSON.parse(localStorage.getItem('ms_usuarios') || '[]');
-        users.push(newUser);
-        localStorage.setItem('ms_usuarios', JSON.stringify(users));
-
-        // Mostrar éxito
-        errorBanner.style.display = 'none';
+        // Mostrar éxito visual antes del redireccionamiento de Formspree
         document.getElementById('successMessage').style.display = 'block';
+        errorBanner.style.display = 'none';
     });
 </script>
 

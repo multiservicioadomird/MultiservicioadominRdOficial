@@ -247,7 +247,10 @@
                 </div>
                 <div class="form-group"><label>Título</label><input type="text" id="servTitle" required></div>
                 <div class="form-group"><label>Descripción</label><textarea id="servDesc" required></textarea></div>
-                <div class="form-group"><label>WhatsApp</label><input type="number" id="servPhone" required> ej +18291232829</div>
+            <div class="form-group">
+    <label for="servPhone">WhatsApp</label>
+    <input type="number" id="servPhone" placeholder="+18291232829" required>
+</div>
                 <div class="form-group"><label>Imagen</label><input type="file" id="servImg" accept="image/*"></div>
                 <button type="submit" class="btn-publish" style="width:100%">Publicar Ahora</button>
                 <button type="button" onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px;">Cancelar</button>
@@ -376,4 +379,5 @@
     </script>
 </body>
 </html>
+
 

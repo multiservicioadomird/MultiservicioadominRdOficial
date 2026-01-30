@@ -3,197 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MS Live Feedback</title>
+    <title>MS Community Messenger</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --azul-ms: #004e92;
             --rojo-ms: #e23337;
+            --whatsapp-bg: #e5ddd5;
             --gradient: linear-gradient(135deg, #004e92 0%, #e23337 100%);
         }
 
-        /* DISEÑO DE LA CAJA MS */
-        .ms-comment-box {
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            font-family: 'Segoe UI', sans-serif;
-            border: 1px solid #ddd;
-        }
-
-        .ms-header {
-            background: var(--gradient);
-            padding: 15px 20px;
+        body {
+            background-color: #d1d8e0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            color: white;
-        }
-
-        .ms-header h2 {
+            height: 100vh;
             margin: 0;
-            font-size: 1.4rem;
-            letter-spacing: 3px;
-            font-weight: 900;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
         }
 
-        .ms-status {
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: #25d366;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* ÁREA DE MENSAJES */
-        .ms-body {
-            height: 450px;
-            overflow-y: auto;
-            padding: 15px;
-            background: #f8f9fa;
+        /* CONTENEDOR PRINCIPAL TIPO MÓVIL */
+        .ms-phone-container {
+            width: 380px;
+            height: 600px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            border: 8px solid #333;
+        }
+
+        /* CABECERA ESTILO MENSAJERÍA */
+        .ms-chat-header {
+            background: var(--gradient);
+            padding: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
             gap: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .ms-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--azul-ms);
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .ms-header-info h3 { margin: 0; font-size: 1rem; }
+        .ms-header-info span { font-size: 0.75rem; opacity: 0.9; display: flex; align-items: center; gap: 4px; }
+        .online-dot { width: 8px; height: 8px; background: #4df166; border-radius: 50%; }
+
+        /* CUERPO DEL CHAT CON FONDO ESTRUCTURADO */
+        .ms-chat-body {
+            flex: 1;
+            background-color: var(--whatsapp-bg);
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* Patrón sutil */
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             scroll-behavior: smooth;
         }
 
-        .comment {
-            background: white;
-            padding: 12px;
+        /* BURBUJAS DE MENSAJE */
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
             border-radius: 15px;
-            border-left: 4px solid var(--azul-ms);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            animation: slideIn 0.5s ease-out;
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .user-name {
-            font-weight: bold;
-            color: var(--azul-ms);
             font-size: 0.9rem;
-        }
-
-        .time {
-            font-size: 0.7rem;
-            color: #999;
-        }
-
-        .msg-text {
-            font-size: 0.85rem;
-            color: #444;
+            position: relative;
             line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* ANIMACIONES */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
+        .received {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .user-tag {
+            display: block;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: var(--rojo-ms);
+            margin-bottom: 3px;
         }
 
-        /* Scrollbar Personalizado */
-        .ms-body::-webkit-scrollbar { width: 5px; }
-        .ms-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        .time-tag {
+            display: block;
+            text-align: right;
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* BARRA INFERIOR (ESTÉTICA) */
+        .ms-chat-footer {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fake-input {
+            flex: 1;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            border: 1px solid #ddd;
+        }
+
+        .footer-icons { color: #777; font-size: 1.2rem; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="ms-comment-box">
-        <div class="ms-header">
-            <h2>MS</h2>
-            <div class="ms-status">
-                <div class="dot"></div> En vivo
+    <div class="ms-phone-container">
+        <div class="ms-chat-header">
+            <i class="fas fa-arrow-left"></i>
+            <div class="ms-avatar">MS</div>
+            <div class="ms-header-info">
+                <h3>Comunidad Store MS</h3>
+                <span><div class="online-dot"></div> en línea ahora</span>
+            </div>
+            <i class="fas fa-ellipsis-v" style="margin-left: auto;"></i>
+        </div>
+
+        <div class="ms-chat-body" id="chatWindow">
+            <div class="message received">
+                <span class="user-tag">Soporte MS</span>
+                ¡Bienvenidos a la comunidad oficial! Aquí pueden ver las opiniones de nuestros clientes.
+                <span class="time-tag">9:00 AM</span>
             </div>
         </div>
-        <div class="ms-body" id="commentContainer">
-            </div>
+
+        <div class="ms-chat-footer">
+            <i class="far fa-smile footer-icons"></i>
+            <div class="fake-input">Escribe un mensaje...</div>
+            <i class="fas fa-camera footer-icons"></i>
+            <i class="fas fa-microphone footer-icons" style="color: var(--azul-ms);"></i>
+        </div>
     </div>
 
 <script>
-    // ELEMENTOS PARA GENERAR 1000+ COMBINACIONES
-    const nombres = ["Carlos M.", "Ana Rivera", "José RD", "TechLover", "Maria_01", "Dani El Pro", "Laura S.", "Marcos_V", "Sofía H.", "Luis Cabrera", "Elena G.", "Randy Store", "Wanda MS", "Pedro P."];
+    const nombres = ["Wilmer Pro", "Carla Ventas", "Juan Tech", "Luis_RD", "Santi Store", "Mery_12", "Anderson", "Yuleisy MS", "Marcos Pedidos", "Elena", "Franklin", "Gaby", "Ricardo", "Tati"];
     
-    const inicios = ["¡Wow!", "Increíble,", "Sinceramente,", "Me encanta,", "Por fin,", "Excelente,", "Qué bien,", "Brutal,"];
-    
-    const medios = [
-        "esta plataforma es justo lo que buscaba.",
-        "el diseño de Store MS es súper limpio.",
-        "me recomendaron esta página y tenían razón.",
-        "necesitábamos algo así para nuestros servicios.",
-        "no sabía cómo registrarme pero ya entendí.",
-        "este proyecto va a llegar lejos.",
-        "es la mejor forma de organizar productos.",
-        "me gusta mucho la velocidad de la página."
-    ];
-    
-    const finales = [
-        "¿Cómo puedo subir más cosas?",
-        "10/10 recomendado.",
-        "¡Sigan así equipo!",
-        "Saludos desde Santo Domingo.",
-        "Mañana mismo registro mi negocio.",
-        "Justo lo que me faltaba.",
-        "¿Hay límite de productos?",
-        "¡Éxitos!"
+    const frases = [
+        "¡Wow! Qué buen proyecto, me encanta esta página.",
+        "Sinceramente, necesitábamos algo así de organizado.",
+        "¿Cómo puedo registrar mi primer producto? Alguien me la recomendó.",
+        "Me gusta mucho el diseño azul y rojo, se ve muy profesional.",
+        "Ya hice mi primer registro, fue súper rápido.",
+        "Me la recomendó un amigo y de verdad que vale la pena.",
+        "¿Los 100 códigos de autorización son únicos?",
+        "Qué buena iniciativa para los servicios aquí.",
+        "Excelente plataforma, muy intuitiva.",
+        "Quisiera saber si hay soporte técnico en vivo.",
+        "Me encanta la rapidez con la que carga todo.",
+        "Por fin una página que no se traba al subir fotos.",
+        "¡Sigan así! Hacía falta una Store MS.",
+        "¿Se pueden subir servicios de reparación también?",
+        "Increíble el sistema de chat interno.",
+        "Ya compartí el enlace con mis contactos, buen trabajo."
     ];
 
-    const container = document.getElementById('commentContainer');
+    const chatWindow = document.getElementById('chatWindow');
 
-    function generarComentario() {
-        const n = nombres[Math.floor(Math.random() * nombres.length)];
-        const i = inicios[Math.floor(Math.random() * inicios.length)];
-        const m = medios[Math.floor(Math.random() * medios.length)];
-        const f = finales[Math.floor(Math.random() * finales.length)];
-        
-        const comentarioHTML = `
-            <div class="comment">
-                <div class="comment-header">
-                    <span class="user-name">${n}</span>
-                    <span class="time">ahora mismo</span>
-                </div>
-                <div class="msg-text">${i} ${m} ${f}</div>
-            </div>
+    function agregarComentario() {
+        const randomNombre = nombres[Math.floor(Math.random() * nombres.length)];
+        const randomFrase = frases[Math.floor(Math.random() * frases.length)];
+        const ahora = new Date();
+        const horaStr = ahora.getHours() + ":" + (ahora.getMinutes() < 10 ? '0' : '') + ahora.getMinutes();
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message received';
+        msgDiv.innerHTML = `
+            <span class="user-tag">${randomNombre}</span>
+            ${randomFrase}
+            <span class="time-tag">${horaStr}</span>
         `;
-        
-        container.innerHTML += comentarioHTML;
-        container.scrollTop = container.scrollHeight; // Auto-scroll al nuevo mensaje
+
+        chatWindow.appendChild(msgDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        // Programar el siguiente mensaje en un tiempo aleatorio
+        programarSiguiente();
     }
 
-    // CARGA INICIAL (3 mensajes para que no esté vacía)
-    setTimeout(generarComentario, 500);
-    setTimeout(generarComentario, 1500);
+    function programarSiguiente() {
+        // Tiempo aleatorio entre 1 minuto (60,000ms) y 10 minutos (600,000ms)
+        const min = 60000;
+        const max = 600000;
+        const esperaAleatoria = Math.floor(Math.random() * (max - min + 1) + min);
+        
+        console.log("Próximo comentario en: " + (esperaAleatoria / 60000).toFixed(2) + " minutos.");
+        
+        setTimeout(agregarComentario, esperaAleatoria);
+    }
 
-    // CONFIGURACIÓN DEL TIEMPO
-    // El usuario pidió 20 minutos (1,200,000 milisegundos). 
-    // Para la demo lo pondré cada 8 segundos para que veas cómo funciona.
-    
-    const TIEMPO_REAL = 20 * 60 * 1000; // Esto serían 20 minutos
-    const TIEMPO_DEMO = 18000;          // 8 segundos para ver resultados rápido
-
-    setInterval(generarComentario, TIEMPO_DEMO); 
+    // Comentarios iniciales para que no esté vacío al abrir
+    setTimeout(agregarComentario, 2000);
+    setTimeout(agregarComentario, 7000);
 
 </script>
 </body>
 </html>
-
-

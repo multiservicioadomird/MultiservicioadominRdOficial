@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario Multi Service a Domin RD</title>
+    <title>Registro Multi Service Domin RD</title>
     <style>
+        /* Fondo con degradado moderno y llamativo */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #a9a4ce;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,176 +16,150 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            background-image: url("Gemini_Generated_Image_q1ya9nq1ya9nq1ya.png");
-            background-repeat: no-repeat;
             background-attachment: fixed;
-            background-size: cover;
-            background-position: center center;
         }
 
+        /* Contenedor con efecto de cristal y sombra profunda */
         .form-container {
-            background-color: #c2c1cc;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+            background-color: #8f9da8fa;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 550px;
+            max-width: 500px;
             box-sizing: border-box;
+            border-top: 5px solid #ff6b6b; /* Detalle de color llamativo */
         }
 
         h2 {
-            color: #333333;
+            color: #1e3c72;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 24px;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .profile-picture-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px;
+        .form-group {
+            margin-bottom: 20px;
         }
-
-        #profile-picture-preview {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #cccccc;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            margin-bottom: 15px;
-            background-color: #f0f0f0;
-        }
-
-        .upload-button {
-            display: inline-block;
-            background-color: #555555;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-
-        #profile-picture-upload { display: none; }
-        .form-group { margin-bottom: 18px; }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #555555;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
         }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cccccc;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             box-sizing: border-box;
             font-size: 16px;
+            transition: border-color 0.3s ease;
+            outline: none;
         }
 
+        input:focus, select:focus {
+            border-color: #1e3c72;
+        }
+
+        /* Botón llamativo con hover */
         .submit-button {
-            background-color: #34495e;
+            background-color: #ff6b6b;
             color: white;
-            padding: 14px 25px;
+            padding: 16px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             font-size: 18px;
-            margin-top: 20px;
+            margin-top: 10px;
             font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+        }
+
+        .submit-button:hover {
+            background-color: #ee5253;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
         }
 
         .error-banner {
-            background-color: #e74c3c;
+            background-color: #ff3f34;
             color: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: none;
             font-weight: bold;
+            animation: shake 0.5s ease;
         }
 
         .success-message {
-            background-color: #27ae60;
+            background-color: #05c46b;
             color: white;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
             display: none;
+            margin-top: 15px;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2>Registro de Usuario</h2>
+    <h2>Registro de Servicio</h2>
     
-    <div id="errorBanner" class="error-banner">No es posible hasta completar formulario</div>
+    <div id="errorBanner" class="error-banner">Por favor, completa todos los campos</div>
 
-    <form id="registroForm" action="https://formspree.io/f/mvzkleyl" method="POST" enctype="multipart/form-data">
-        
-        <div class="profile-picture-container">
-            <img id="profile-picture-preview" src="https://via.placeholder.com/120/cccccc/ffffff?text=+" alt="Foto de perfil">
-            <input type="file" id="profile-picture-upload" name="foto_perfil" accept="image/*" required>
-            <label for="profile-picture-upload" class="upload-button" id="uploadLabel">Subir Foto (Obligatorio)</label>
-        </div>
-
-        <div class="form-group">
-            <label>Perfil</label>
-            <select id="perfil" name="perfil" required>
-                <option value="" disabled selected>Selecciona un perfil</option>
-                <option value="cliente">Cliente</option>
-                <option value="administrador">Administrador</option>
-                <option value="otro">Otro</option>
-            </select>
-        </div>
+    <form id="registroForm" action="https://formspree.io/f/mvzkleyl" method="POST">
 
         <div class="form-group">
             <label>Perfil de Vendedor</label>
             <select id="perfil_vendedor" name="perfil_vendedor" required>
-                <option value="" disabled selected>¿Es vendedor?</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+                <option value="" disabled selected>¿Es usted vendedor?</option>
+                <option value="si">Sí, deseo vender</option>
+                <option value="no">No, solo servicios</option>
             </select>
         </div>
 
         <div class="form-group">
             <label>Nombre Completo</label>
-            <input type="text" id="nombre" name="nombre_completo" required placeholder="Obligatorio">
+            <input type="text" id="nombre" name="nombre_completo" required placeholder="Escriba su nombre">
         </div>
 
         <div class="form-group">
             <label>Correo Electrónico</label>
-            <input type="email" id="email" name="correo_electronico" required placeholder="Obligatorio">
+            <input type="email" id="email" name="correo_electronico" required placeholder="ejemplo@correo.com">
         </div>
         
-        <button type="submit" class="submit-button">REGISTRAR</button>
+        <button type="submit" class="submit-button">UNIRSE AHORA</button>
     </form>
     
-    <div id="successMessage" class="success-message">¡Perfecto! Enviando datos al correo...</div>
+    <div id="successMessage" class="success-message">¡Excelente! Procesando su solicitud...</div>
 </div>
 
 <script>
-    let fotoSubida = false;
-    document.getElementById('profile-picture-upload').addEventListener('change', function(event) {
-        const [file] = event.target.files;
-        if (file) {
-            document.getElementById('profile-picture-preview').src = URL.createObjectURL(file);
-            document.getElementById('uploadLabel').textContent = "Foto cargada ✅";
-            document.getElementById('uploadLabel').style.backgroundColor = "#27ae60";
-            fotoSubida = true;
-            document.getElementById('errorBanner').style.display = 'none';
-        }
-    });
-
     const form = document.getElementById('registroForm');
     const errorBanner = document.getElementById('errorBanner');
 
@@ -194,14 +169,14 @@
         const nombre = document.getElementById('nombre').value.trim();
         const email = document.getElementById('email').value.trim();
 
-        if (!fotoSubida || !perfil || !vendedor || !nombre || !email) {
+        if (!perfil || !vendedor || !nombre || !email) {
             e.preventDefault();
             errorBanner.style.display = 'block';
             window.scrollTo(0, 0);
             return false;
         }
 
-        // Mostrar éxito visual antes del redireccionamiento de Formspree
+        // Mostrar éxito visual
         document.getElementById('successMessage').style.display = 'block';
         errorBanner.style.display = 'none';
     });

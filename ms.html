@@ -25,7 +25,6 @@
         /* --- AJUSTE PARA 5 COLUMNAS Y CAJAS PEQUEÑAS --- */
         .product-grid { 
             display: grid; 
-            /* Esto fuerza a que quepan más elementos por fila reduciendo el tamaño mínimo a 200px */
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
             gap: 15px; 
         }
@@ -36,7 +35,6 @@
 
         @media (max-width: 768px) {
             body { padding-top: 150px; }
-            /* En móviles muy pequeños muestra 2 por fila para que sean legibles */
             .product-grid { 
                 grid-template-columns: repeat(2, 1fr) !important; 
                 gap: 10px; 
@@ -76,7 +74,7 @@
         .card.agotado { opacity: 0.7; }
         .card.agotado img { filter: grayscale(1); }
 
-        .img-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; }
+        .img-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; cursor: zoom-in; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; transition: opacity 0.5s; }
         .img-secondary { opacity: 0; }
         .card:not(.agotado):hover .img-secondary { opacity: 1; }
@@ -107,6 +105,24 @@
         .btn-submit { width: 100%; background: var(--gradient); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
         #btnBack { display: none; margin: 0 auto 20px; padding: 12px 25px; border-radius: 50px; border: none; background: var(--rojo-ms); color: white; font-weight: bold; cursor: pointer; }
+
+        /* --- ESTILOS VISOR DE IMAGEN --- */
+        #imgViewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        #imgViewer img {
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
     </style>
 </head>
 <body>
@@ -135,6 +151,10 @@
     <div class="container">
         <center><button id="btnBack" onclick="clearUrl()"><i class="fas fa-arrow-left"></i> VER TODO EL CATÁLOGO</button></center>
         <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <div id="imgViewer" onclick="this.style.display='none'">
+        <img id="imgFull" src="">
     </div>
 
     <div class="modal" id="registerModal">
@@ -215,6 +235,12 @@
             reader.onerror = e => reject(e);
         });
 
+        // Función para agrandar imagen
+        function zoomImg(src) {
+            document.getElementById('imgFull').src = src;
+            document.getElementById('imgViewer').style.display = 'flex';
+        }
+
         document.getElementById('productForm').onsubmit = async function(e) {
             e.preventDefault();
             try {
@@ -268,7 +294,7 @@
                         <div class="badge-status ${isAgotado ? 'status-agotado' : 'status-disponible'}">
                             ${p.status.toUpperCase()}
                         </div>
-                        <div class="img-container">
+                        <div class="img-container" onclick="zoomImg(this.querySelector('img:not([style*=\\'opacity: 0\\'])').src)">
                             <img src="${p.image}" class="img-primary">
                             ${hasTwo ? `<img src="${p.image2}" class="img-secondary">` : ''}
                             ${hasTwo ? `<div class="photo-indicator"><i class="fas fa-images"></i> 2 fotos</div>` : ''}
@@ -330,5 +356,6 @@
     </script>
 </body>
 </html>
+
 
 

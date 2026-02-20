@@ -1,3 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muro de Servicios - MS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #007bff;
+            --neon-blue: #00e1ff;
+            --dark-bg: #0a0a10;
+            --panel-bg: rgba(20, 20, 30, 0.95);
+            --text-white: #ffffff;
+            --card-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+            --danger: #ff4d4d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://img.freepik.com/free-photo/abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette_1258-48251.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center center;
+            color: var(--text-white);
+            min-height: 100vh;
+        }
+
+        /* --- AJUSTE DE CUADRÍCULA: 5 POR FILA EN PC --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Cajas pequeñas de min 200px */
+            gap: 15px;
+        }
+
+        /* --- AJUSTE PARA MÓVILES: 2 POR FILA --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 15px; }
+            .brand { font-size: 1.1em !important; }
+            .btn-publish { padding: 8px 15px !important; font-size: 0.8em; }
+            
+            .wall-container { padding: 10px; margin: 10px auto; }
+            .services-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; /* Fuerza 2 columnas */
+                gap: 10px; 
+            }
+            .card-img { height: 120px !important; } /* Imagen más pequeña en móvil */
+            .card-title { font-size: 1em !important; }
+            .card-desc { font-size: 0.8em !important; height: 40px; overflow: hidden; }
+            .card-body { padding: 10px !important; }
+            .btn-whatsapp-link { font-size: 0.7em !important; padding: 6px !important; }
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .brand {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: var(--text-white);
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .btn-publish {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .btn-publish:hover { background: var(--neon-blue); color: black; }
+
+        .wall-container {
+            max-width: 1400px; /* Un poco más ancho para las 5 columnas */
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        h1 { text-align: center; text-shadow: 2px 2px 4px black; margin-bottom: 30px; font-size: 1.8em; }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px;
+            border-radius: 30px;
+            border: 2px solid var(--primary);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            background: rgba(0,0,0,0.6);
+            color: #ccc;
+            border: 1px solid #444;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        /* VISTA ÚNICA */
+        .single-view-grid { display: flex !important; justify-content: center; width: 100%; }
+        .single-view-grid .service-card { max-width: 400px; width: 100%; }
+
+        /* TARJETAS COMPACTAS */
+        .service-card {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .card-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 2px solid var(--primary); cursor: zoom-in; }
+        .card-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-category { background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.65em; margin-bottom: 8px; align-self: flex-start; }
+        .card-title { font-size: 1.1em; color: var(--neon-blue); margin: 0 0 8px 0; line-height: 1.2; }
+        .card-desc { color: #ccc; font-size: 0.85em; margin-bottom: 12px; flex-grow: 1; }
+        
+        .card-footer { display: flex; gap: 5px; align-items: center; border-top: 1px solid #333; padding-top: 12px; }
+        .btn-whatsapp-link { background: #25D366; color: white; padding: 6px 10px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 0.8em; flex-grow: 1; text-align: center; }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8em;
+        }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: #1a1a20; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; border: 1px solid var(--primary); color: white; max-height: 90vh; overflow-y: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--neon-blue); font-size: 0.9em; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+
+        /* --- ESTILOS PARA LA IMAGEN EN GRANDE (LIGHTBOX) --- */
+        #imageViewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        #imageViewer img {
+            max-width: 95%;
+            max-height: 95%;
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            box-shadow: 0 0 20px var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand" onclick="window.location.href=window.location.origin + window.location.pathname">
+            <i class="fas fa-tools"></i> Multi Service RD
+        </div>
+        <button class="btn-publish" onclick="openModal()"><i class="fas fa-plus"></i> Publicar</button>
+    </nav>
+
+    <div class="wall-container">
+        <button id="btnBack" style="display:none; margin: 0 auto 20px; background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 0 10px var(--primary);" onclick="window.location.href=window.location.origin + window.location.pathname">
+            <i class="fas fa-arrow-left"></i> VER TODOS
+        </button>
+
+        <h1 id="mainTitle">🛠 Muro de Servicios 🧰</h1>
+        
+        <div id="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar..." onkeyup="filterServices()">
+            </div>
+
+            <div class="category-filter" id="catFilter">
+                <button class="filter-btn active" onclick="filterByCategory('all', this)">Todos</button>
+                <button class="filter-btn" onclick="filterByCategory('Electricidad', this)">⚡ Elec.</button>
+                <button class="filter-btn" onclick="filterByCategory('Plomería', this)">🔧 Plom.</button>
+                <button class="filter-btn" onclick="filterByCategory('Refrigeración', this)">❄️ Refrig.</button>
+                <button class="filter-btn" onclick="filterByCategory('Tecnología', this)">💻 Tecno.</button>
+                <button class="filter-btn" onclick="filterByCategory('Mecánica', this)">👨‍🔧 Mec.</button>
+                <button class="filter-btn" onclick="filterByCategory('Trabajos Digitales', this)">🖱️ Digital</button>
+                <button class="filter-btn" onclick="filterByCategory('Grúa', this)">🏗️ Grúa</button>
+                <button class="filter-btn" onclick="filterByCategory('Sonidos', this)">🔊 Sonidos</button>
+                <button class="filter-btn" onclick="filterByCategory('Electrodomésticos', this)">📺 Electro.</button>
+                <button class="filter-btn" onclick="filterByCategory('Clases', this)">📚 Clases</button>
+            </div>
+        </div>
+
+        <div class="services-grid" id="servicesGrid"></div>
+    </div>
+
+    <div id="imageViewer" onclick="this.style.display='none'">
+        <img id="fullImage" src="">
+    </div>
+
+    <div class="modal-overlay" id="serviceModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Publicar Servicio</h2>
+            <div id="modalAccessPanel">
+                <input type="password" id="accessCode" placeholder="PIN acceso" style="width:100%; padding:10px; margin-bottom:10px; background: black; color: white; border: 1px solid #444;">
+                <button class="btn-publish" style="width:100%" onclick="checkAccess()">Entrar</button>
+            </div>
+            <form id="serviceForm" style="display:none;">
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="servCat">
+                        <option value="Electricidad">Electricidad</option>
+                        <option value="Plomería">Plomería</option>
+                        <option value="Refrigeración">Refrigeración</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Mecánica">Mecánica</option>
+                        <option value="Trabajos Digitales">Trabajos Digitales</option>
+                        <option value="Grúa">Servicio de Grúa</option>
+                        <option value="Sonidos">Sonidos y Eventos</option>
+                        <option value="Electrodomésticos">Reparación de Electrodomésticos</option>
+                        <option value="Clases">Clases / Tutorías</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Título</label><input type="text" id="servTitle" required></div>
+                <div class="form-group"><label>Descripción</label><textarea id="servDesc" required></textarea></div>
+            <div class="form-group">
+    <label for="servPhone">WhatsApp</label>
+    <input type="number" id="servPhone" placeholder="+18291232829" required>
+</div>
+                <div class="form-group"><label>Imagen</label><input type="file" id="servImg" accept="image/*"></div>
+                <button type="submit" class="btn-publish" style="width:100%">Publicar Ahora</button>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px;">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRyUVr1zCUOK2odt1P-c3d2Bj7azdmea0",
+            authDomain: "servico-a9c41.firebaseapp.com",
+            databaseURL: "https://servico-a9c41-default-rtdb.firebaseio.com",
+            projectId: "servico-a9c41",
+            storageBucket: "servico-a9c41.firebasestorage.app",
+            messagingSenderId: "595098430895",
+            appId: "1:595098430895:web:2adfc546bb3f54419b135a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const servicesRef = db.ref('services');
+        const CODES = ["8349", "1720", "4561", "9032"]; 
+        const DELETE_CODE = "3021"; 
+
+        function getProductId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        function copyShareLink(id) {
+            let currentUrl = window.location.href.split('?')[0];
+            const finalUrl = currentUrl + "?id=" + id;
+            navigator.clipboard.writeText(finalUrl).then(() => alert("Link copiado"));
+        }
+
+        function openModal() { document.getElementById('serviceModal').classList.add('active'); }
+        function closeModal() { 
+            document.getElementById('serviceModal').classList.remove('active');
+            document.getElementById('serviceForm').style.display = 'none';
+            document.getElementById('modalAccessPanel').style.display = 'block';
+        }
+
+        function checkAccess() {
+            if(CODES.includes(document.getElementById('accessCode').value)) {
+                document.getElementById('modalAccessPanel').style.display = 'none';
+                document.getElementById('serviceForm').style.display = 'block';
+            } else { alert("Código incorrecto"); }
+        }
+
+        function deleteService(id) {
+            if (prompt("PIN seguridad:") === DELETE_CODE) {
+                servicesRef.child(id).remove();
+            }
+        }
+
+        // Función para ver imagen en grande
+        function viewImg(src) {
+            const viewer = document.getElementById('imageViewer');
+            const fullImg = document.getElementById('fullImage');
+            fullImg.src = src;
+            viewer.style.display = 'flex';
+        }
+
+        document.getElementById('serviceForm').onsubmit = function(e) {
+            e.preventDefault();
+            const file = document.getElementById('servImg').files[0];
+            const reader = new FileReader();
+            const publish = (img) => {
+                servicesRef.push({
+                    category: document.getElementById('servCat').value,
+                    title: document.getElementById('servTitle').value,
+                    desc: document.getElementById('servDesc').value,
+                    phone: document.getElementById('servPhone').value,
+                    image: img || 'https://via.placeholder.com/300x200?text=MS+Servicio',
+                    timestamp: Date.now()
+                });
+                closeModal();
+            };
+            if(file) { reader.onloadend = () => publish(reader.result); reader.readAsDataURL(file); } 
+            else { publish(); }
+        };
+
+        servicesRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const list = [];
+            for(let key in data) { list.push({ id: key, ...data[key] }); }
+            window.allServices = list.reverse();
+            const specificId = getProductId();
+            render(specificId ? window.allServices.filter(s => s.id === specificId) : window.allServices, !!specificId);
+        });
+
+        function render(services, isSingle) {
+            const grid = document.getElementById('servicesGrid');
+            const btnBack = document.getElementById('btnBack');
+            const controls = document.getElementById('controls');
+            
+            grid.classList.toggle('single-view-grid', isSingle);
+            btnBack.style.display = isSingle ? 'block' : 'none';
+            controls.style.display = isSingle ? 'none' : 'block';
+
+            grid.innerHTML = '';
+            services.forEach(s => {
+                const mensajeWA = encodeURIComponent(`Hola, vi tu servicio de (${s.title}) en Multi Service.`);
+                grid.innerHTML += `
+                    <div class="service-card">
+                        <img src="${s.image}" class="card-img" onclick="viewImg(this.src)">
+                        <div class="card-body">
+                            <span class="card-category">${s.category}</span>
+                            <h3 class="card-title">${s.title}</h3>
+                            <p class="card-desc">${s.desc}</p>
+                            <div class="card-footer">
+                                <a href="https://wa.me/${s.phone}?text=${mensajeWA}" target="_blank" class="btn-whatsapp-link"><i class="fab fa-whatsapp"></i> Chat</a>
+                                <button class="btn-action" onclick="copyShareLink('${s.id}')"><i class="fas fa-link"></i></button>
+                                <button class="btn-action" onclick="deleteService('${s.id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterByCategory(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(cat === 'all' ? window.allServices : window.allServices.filter(s => s.category === cat), false);
+        }
+
+        function filterServices() {
+            const text = document.getElementById('searchInput').value.toLowerCase();
+            render(window.allServices.filter(s => s.title.toLowerCase().includes(text)), false);
+        }
+    </script>
+</body>
+</html>
 
 
 

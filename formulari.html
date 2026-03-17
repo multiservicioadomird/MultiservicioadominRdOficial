@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Multi Service Domin RD</title>
     <style>
-        /* Fondo con degradado moderno y llamativo */
+        /* Regreso al diseño anterior */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -19,16 +19,16 @@
             background-attachment: fixed;
         }
 
-        /* Contenedor con efecto de cristal y sombra profunda */
         .form-container {
-            background-color: #8f9da8fa;
+            background-color: #ffffff;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 500px;
             box-sizing: border-box;
-            border-top: 5px solid #ff6b6b; /* Detalle de color llamativo */
+            border-top: 5px solid #ff6b6b;
+            transition: all 0.5s ease;
         }
 
         h2 {
@@ -67,7 +67,7 @@
             border-color: #1e3c72;
         }
 
-        /* Botón llamativo con hover */
+        /* Botón llamativo con hover (Estilo solicitado) */
         .submit-button {
             background-color: #ff6b6b;
             color: white;
@@ -94,6 +94,7 @@
             transform: translateY(0);
         }
 
+        /* Banner de error solicitado */
         .error-banner {
             background-color: #ff3f34;
             color: white;
@@ -106,16 +107,6 @@
             animation: shake 0.5s ease;
         }
 
-        .success-message {
-            background-color: #05c46b;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-            margin-top: 15px;
-        }
-
         @keyframes shake {
             0% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
@@ -123,62 +114,165 @@
             75% { transform: translateX(-5px); }
             100% { transform: translateX(0); }
         }
+
+        /* Estilos de la Pantalla de Bienvenida */
+        #welcomeSection {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .access-code {
+            display: inline-block;
+            background: #1e3c72;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            border: 2px dashed #ff6b6b;
+        }
+
+        .user-name {
+            color: #ff6b6b;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .home-button {
+            display: inline-block;
+            background-color: #05c46b;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .home-button:hover {
+            background-color: #049f57;
+        }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Registro de Servicio</h2>
-    
-    <div id="errorBanner" class="error-banner">Por favor, completa todos los campos</div>
-
-    <form id="registroForm" action="https://formspree.io/f/mvzkleyl" method="POST">
-
-        <div class="form-group">
-            <label>Perfil de Vendedor</label>
-            <select id="perfil_vendedor" name="perfil_vendedor" required>
-                <option value="" disabled selected>¿Es usted vendedor?</option>
-                <option value="si">Sí, deseo vender</option>
-                <option value="no">No, solo servicios</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Nombre Completo</label>
-            <input type="text" id="nombre" name="nombre_completo" required placeholder="Escriba su nombre">
-        </div>
-
-        <div class="form-group">
-            <label>Correo Electrónico</label>
-            <input type="email" id="email" name="correo_electronico" required placeholder="ejemplo@correo.com">
-        </div>
+<div class="form-container" id="mainCard">
+    <!-- SECCIÓN DE REGISTRO -->
+    <div id="formSection">
+        <h2>Registro de Servicio</h2>
         
-        <button type="submit" class="submit-button">UNIRSE AHORA</button>
-    </form>
-    
-    <div id="successMessage" class="success-message">¡Excelente! Procesando su solicitud...</div>
+        <div id="errorBanner" class="error-banner">Por favor, completa todos los campos</div>
+
+        <form id="registroForm">
+            <div class="form-group">
+                <label>Perfil de Vendedor</label>
+                <select id="perfil_vendedor" name="perfil_vendedor" required>
+                    <option value="" disabled selected>¿Es usted vendedor?</option>
+                    <option value="si">Sí, deseo vender</option>
+                    <option value="no">No, solo servicios</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre_completo" required placeholder="Escriba su nombre">
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="email" name="correo_electronico" required placeholder="ejemplo@correo.com">
+            </div>
+            
+            <button type="submit" id="btnSubmit" class="submit-button">UNIRSE AHORA</button>
+        </form>
+    </div>
+
+    <!-- SECCIÓN DE BIENVENIDA -->
+    <div id="welcomeSection">
+        <h2>Bienvenido a la página</h2>
+        <p style="font-size: 18px; color: #444;">
+            ¡Hola <span id="displayUserName" class="user-name"></span>! <br>
+            Bienvenido a <strong>MultiservicioadominRd</strong>.
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <p style="color: #666; font-weight: bold; margin-bottom: 5px;">TU CÓDIGO DE ACCESO ES:</p>
+            <div id="generatedCode" class="access-code">----</div>
+        </div>
+
+        <p style="font-size: 14px; color: #777;">Registro exitoso. Guarda tu código para ingresar.</p>
+        
+        <a href="#" class="home-button" onclick="location.reload()">FINALIZAR</a>
+    </div>
 </div>
 
 <script>
-    const form = document.getElementById('registroForm');
+    const t welcomeSection = document.getElementById('welcomeSection');
+    consform = document.getElementById('registroForm');
+    const formSection = document.getElementById('formSection');
     const errorBanner = document.getElementById('errorBanner');
+    const displayUserName = document.getElementById('displayUserName');
+    const generatedCode = document.getElementById('generatedCode');
+    const btnSubmit = document.getElementById('btnSubmit');
 
-    form.addEventListener('submit', function(e) {
-        const perfil = document.getElementById('perfil').value;
+    const codigosSecretos = ["8349", "1720", "4561", "9032"];
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
         const vendedor = document.getElementById('perfil_vendedor').value;
         const nombre = document.getElementById('nombre').value.trim();
         const email = document.getElementById('email').value.trim();
 
-        if (!perfil || !vendedor || !nombre || !email) {
-            e.preventDefault();
+        // Validación
+        if (!vendedor || !nombre || !email) {
             errorBanner.style.display = 'block';
-            window.scrollTo(0, 0);
-            return false;
+            return;
         }
 
-        // Mostrar éxito visual
-        document.getElementById('successMessage').style.display = 'block';
-        errorBanner.style.display = 'none';
+        // Cambiar estado del botón mientras procesa
+        btnSubmit.innerText = "PROCESANDO...";
+        btnSubmit.disabled = true;
+
+        // Enviar a Formspree usando Fetch para evitar recargar la página
+        const formData = new FormData();
+        formData.append('Vendedor', vendedor);
+        formData.append('Nombre', nombre);
+        formData.append('Email', email);
+
+        try {
+            await fetch("https://formspree.io/f/mvzkleyl", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            // Generar código aleatorio de la lista
+            const randomCode = codigosSecretos[Math.floor(Math.random() * codigosSecretos.length)];
+
+            // TRANSICIÓN: Se eliminan los datos de registro y aparece bienvenida
+            formSection.style.display = 'none';
+            displayUserName.innerText = nombre;
+            generatedCode.innerText = randomCode;
+            welcomeSection.style.display = 'block';
+
+        } catch (error) {
+            btnSubmit.innerText = "UNIRSE AHORA";
+            btnSubmit.disabled = false;
+            errorBanner.innerText = "Error de conexión. Intente más tarde.";
+            errorBanner.style.display = 'block';
+        }
     });
 </script>
 
